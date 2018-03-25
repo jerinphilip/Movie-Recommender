@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -24,6 +25,13 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre
+
+
+class UserProfile(User):
+    age = models.IntegerField(default=0)
+    gender = models.IntegerField(choices=GENDERS)
+    phone = models.CharField(default="", max_length=10)
+    genre_pref = models.ManyToManyField(Genre)
 
 
 class Movie(models.Model):
@@ -58,3 +66,25 @@ class Show(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
     time = models.TimeField()
+
+
+class Booking(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    seat_identifier = models.CharField(max_length=100, default="")
+    show  = models.ForeignKey(Show, on_delete=models.CASCADE)
+    type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
+
+
+class Invoice(models.Model):
+    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    ticket_price = models.FloatField(default=0)
+    taxes = models.FloatField(default=0)
+    service_charge = models.FloatField(default=0)
+
+
+class Review(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0)
+    description = models.TextField(default="")
+
