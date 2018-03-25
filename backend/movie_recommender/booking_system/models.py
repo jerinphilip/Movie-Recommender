@@ -8,6 +8,9 @@ GENDERS = [(1, "male"), (2, "female"), (3, "other")]
 LANGUAGES = [(0, "english"), (1, "hindi"), (2, 'telugu')]
 
 
+class Language(models.Model):
+    lang = models.CharField(max_length=100, unique=True)
+
 class Cast(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
     age = models.IntegerField(default=0)
@@ -21,7 +24,7 @@ class Cast(models.Model):
 
 
 class Genre(models.Model):
-    genre = models.CharField(max_length=100)
+    genre = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.genre
@@ -37,7 +40,7 @@ class UserProfile(User):
 class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")
-    language = models.IntegerField(choices=LANGUAGES)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
     casts = models.ManyToManyField(Cast)
     genres = models.ManyToManyField(Genre)
 
