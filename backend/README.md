@@ -37,4 +37,11 @@ python manage.py createsuperuser
 python manage.py seed --path seed/movie_metadata.csv
 ```
 
+### Verifying (move to movie_recommender folder first)
+```
+python manage.py runserver
+```
+### Login to localhost:8000/admin (assuming you created admin/superuser above)
+
+
 
