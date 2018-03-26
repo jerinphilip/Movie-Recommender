@@ -15,8 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
+from django.conf.urls import url
+
 
 urlpatterns = [
-    path(r'api/', include('booking_system.urls')),
+    path(r'default/', include('booking_system.urls')),
     path(r'admin/', admin.site.urls),
+    url(r'^login/$', auth_views.login, name='login'),
+    url(r'^logout/$', auth_views.logout, name='logout'),
 ]
