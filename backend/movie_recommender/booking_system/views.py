@@ -3,6 +3,7 @@ from .serializers import CastSerializer, Cast, MovieSerializer, Movie
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -20,9 +21,6 @@ class CastDetail(generics.RetrieveUpdateDestroyAPIView):
 class MovieList(generics.ListCreateAPIView):
     queryset = Movie.objects.all()
     serializer_class = MovieSerializer
-
-
-from django.http import HttpResponse
 
 
 def index(request):
