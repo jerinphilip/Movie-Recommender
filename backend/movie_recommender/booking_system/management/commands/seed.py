@@ -44,14 +44,30 @@ class Command(BaseCommand):
             _movie.genres.set(_genres)
             _movie.save()
 
-    def _seed_cast(self, params):
-        pass
+    def _seed_cast(self, cast):
+        M.Cast.objects.all().delete()
+        directors = set()
+        actors = set()
+        for i, c in cast.iterrows():
+            directors.add(c[0])
+            actors.add(c[1])
+            actors.add(c[2])
+            actors.add(c[3])
+        for director in directors:
+            _cast = M.Cast.objects.create(name=director, cast_type=2, gender=1,     )
+            _cast.save()
+        for actor in actors:
+            _cast = M.Cast.objects.create(name=actor, cast_type=1, gender=1)
+            _cast.save()
 
     def seed(self, path):
         df = pd.read_csv(path)
         df = df.head()
         self._seed_genres(df["genres"])
         self._seed_languages(df["language"])
+        cast_params = [1, 6, 10, 14]
+        cs = df.iloc[:, cast_params]
+        self._seed_cast(cs)
         movie_params = [9, 11, 17, 19, 23]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
