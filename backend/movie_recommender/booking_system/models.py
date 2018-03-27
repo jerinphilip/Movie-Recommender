@@ -11,6 +11,7 @@ LANGUAGES = [(0, "english"), (1, "hindi"), (2, 'telugu')]
 class Language(models.Model):
     lang = models.CharField(max_length=100, unique=True)
 
+
 class Cast(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
     age = models.IntegerField(default=0)
