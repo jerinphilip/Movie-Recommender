@@ -13,7 +13,7 @@ from rest_framework.authtoken import views as drf_views
 # urlpatterns = format_suffix_patterns(urlpatterns)
 
 urlpatterns = [
-    url('', views.index, name='index')
+    url('', views.show_movies, name='index')
 ]
 
 
