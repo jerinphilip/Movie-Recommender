@@ -1,7 +1,9 @@
 from django.core.management.base import BaseCommand
 import booking_system.models as M
+from datetime import datetime
 import pandas as pd
 import funcy as fy
+import random 
 
 
 class Command(BaseCommand):
@@ -60,6 +62,49 @@ class Command(BaseCommand):
             _cast = M.Cast.objects.create(name=actor, cast_type=1, gender=1)
             _cast.save()
 
+    def _seed_seat_type(self):
+        M.SeatType.objects.all().delete()
+        s = [('Regular', 200),('Executive', 300)]
+        for i in range(2): #Creating two seat types
+            name = s[i][0]
+            price = s[i][1]
+            _seat_type = M.SeatType.objects.create(name=name, price=price)
+            _seat_type.save()
+
+    def _seed_theater(self):
+        M.Theater.objects.all().delete()
+        theaters = ["gold_plaza","silver_plaza","platinum_plaza"]
+        latitude, longitude=0,0
+        _seat_types = list(M.SeatType.objects.all())
+        for theater in theaters:
+            _theater = M.Theater.objects.create(name=theater,location_lat=latitude,
+                                        location_long=longitude)
+            _theater.save()
+            for _seat_type in _seat_types:
+                _theater.seat_types.add(_seat_type)
+
+    def _seed_screens(self):
+        M.Screen.objects.all().delete()
+        _theaters=list(M.Theater.objects.all())
+        _identifiers=['A','B','C','D']
+        for _identifier in _identifiers:
+            for _theater in _theaters:
+                _screen=M.Screen.objects.create(identifier=_identifier, theater=_theater)
+                _screen.save()
+
+    def _seed_shows(self):
+        M.Show.objects.all().delete()
+        _screens = list(M.Screen.objects.all())
+        _movies = list(M.Movie.objects.all())
+        times = ['10:00:00', '2:00:00', '8:00:00']
+        for _screen in _screens:
+            for _time in times:
+                for _movie in _movies:
+                    time = datetime.strptime(_time, '%H:%M:%S').time()
+                    _show = M.Show.objects.create(movie=_movie,screen=_screen,
+                                                  time=time)
+                    _show.save()
+
     def seed(self, path):
         df = pd.read_csv(path)
         df = df.head()
@@ -71,6 +116,10 @@ class Command(BaseCommand):
         movie_params = [9, 11, 17, 19, 23]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
+        self._seed_seat_type()
+        self._seed_theater()
+        self._seed_screens()
+        self._seed_shows()
 
 # 0 color
 # 1 director_name
