@@ -1,14 +1,18 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class CastType(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
 
 class Gender(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
+
 class Language(models.Model):
     lang = models.CharField(max_length=100, unique=True)
+
 
 class CrewProfile(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
@@ -16,6 +20,7 @@ class CrewProfile(models.Model):
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     link = models.TextField(default="")
     description = models.TextField(default="")
+    role = models.ManyToManyField(CastType)
 
     def __str__(self):
         return self.name
@@ -26,11 +31,6 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre
-
-class MovieCrew(models.Model):
-    role = models.ForeignKey(CastType, on_delete=models.CASCADE)
-    profile = models.ForeignKey(CrewProfile, on_delete=models.CASCADE)
-    
 
 
 class UserProfile(User):
@@ -44,7 +44,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    crew = models.ManyToManyField(MovieCrew)
+    crew = models.ManyToManyField(CrewProfile)
     genres = models.ManyToManyField(Genre)
 
     def __str__(self):

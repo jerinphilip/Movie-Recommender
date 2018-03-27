@@ -4,7 +4,6 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Movie)
-admin.site.register(MovieCrew)
 admin.site.register(CrewProfile)
 admin.site.register(Theater)
 admin.site.register(Genre)
