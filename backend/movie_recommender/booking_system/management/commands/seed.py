@@ -18,12 +18,42 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.seed(options['path'])
 
+    def _seed_cast_type(self):
+        M.CastType.objects.all().delete()
+        c = ["Director", "Actor", "Producer"] #Creating three cast types
+        for i in range(3): 
+            name = c[i]
+            _cast_type = M.CastType.objects.create(name=name)
+            _cast_type.save()
+
+    def _seed_gender(self):
+        M.Gender.objects.all().delete()
+        g = ["Male", "Female"] #Creating two gender
+        for i in range(2): 
+            name = g[i]
+            _gender = M.Gender.objects.create(name=name)
+            _gender.save()
+    
     def _seed_languages(self, langs):
         M.Language.objects.all().delete()
         langs = set(list(langs))
         for lang in langs:
             _lang = M.Language.objects.create(lang=lang)
             _lang.save()
+
+    # def _seed_crew_profile(self, crew_profile):
+    #     M.CrewProfile.objects.all().delete()
+    #     crew = set()
+    #     for i, c in crew_profile.iterrows():
+    #         crew.add(c[0])
+    #         crew.add(c[1])
+    #         crew.add(c[2])
+    #         crew.add(c[3])
+        
+    #     for cp in crew_profile:
+    #         _gender = M.Gender.objects.get(lang=lang)
+    #         _crew_profile = M.CrewProfile.objects.create(name=director, cast_type=2, gender=1)
+    #         _cast.save()
 
     def _seed_genres(self, genres):
         M.Genre.objects.all().delete()
@@ -46,22 +76,6 @@ class Command(BaseCommand):
             _genres = [M.Genre.objects.get(genre=g) for g in genres]
             _movie.genres.set(_genres)
             _movie.save()
-
-    def _seed_cast(self, cast):
-        M.Cast.objects.all().delete()
-        directors = set()
-        actors = set()
-        for i, c in cast.iterrows():
-            directors.add(c[0])
-            actors.add(c[1])
-            actors.add(c[2])
-            actors.add(c[3])
-        for director in directors:
-            _cast = M.Cast.objects.create(name=director, cast_type=2, gender=1)
-            _cast.save()
-        for actor in actors:
-            _cast = M.Cast.objects.create(name=actor, cast_type=1, gender=1)
-            _cast.save()
 
     def _seed_seat_type(self):
         M.SeatType.objects.all().delete()
@@ -109,11 +123,13 @@ class Command(BaseCommand):
     def seed(self, path):
         df = pd.read_csv(path)
         df = df.head()
+        self._seed_cast_type()
+        self._seed_gender()
         self._seed_genres(df["genres"])
         self._seed_languages(df["language"])
-        cast_params = [1, 6, 10, 14]
-        cs = df.iloc[:, cast_params]
-        self._seed_cast(cs)
+        # cast_params = [1, 6, 10, 14]
+        # cs = df.iloc[:, cast_params]
+        # self._seed_cast(cs)
         movie_params = [9, 11, 17, 19, 23]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
