@@ -4,14 +4,21 @@ from django.contrib.auth.models import User
 
 class CastType(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    def __str__(self):
+        return self.name
 
 
 class Gender(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    def __str__(self):
+        return self.name
 
 
 class Language(models.Model):
     lang = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.lang
 
 
 class CrewProfile(models.Model):
@@ -60,6 +67,9 @@ class SeatType(models.Model):
     name = models.CharField(max_length=100, default="")
     price = models.FloatField(default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class Theater(models.Model):
     name = models.CharField(max_length=100, default="")
@@ -67,10 +77,16 @@ class Theater(models.Model):
     location_long = models.FloatField(default=0)
     seat_types = models.ManyToManyField(SeatType)
 
+    def __str__(self):
+        return self.name
+
 
 class Screen(models.Model):
     theater = models.ForeignKey(Theater, on_delete=models.CASCADE)
     identifier = models.CharField(max_length=10, default="")
+
+    def __str__(self):
+        return '{}-{}'.format(self.theater.name, self.identifier)
 
 
 class Show(models.Model):
@@ -84,6 +100,15 @@ class Booking(models.Model):
     seat_identifier = models.CharField(max_length=100, default="")
     show  = models.ForeignKey(Show, on_delete=models.CASCADE)
     type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
+
+class Seat(models.Model):
+    screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
+    row_id = models.CharField(max_length=3)
+    col_id = models.CharField(max_length=5)
+
+    def __str__(self):
+        return '{}-{}'.format(self.row_id, self.col_id)
+
 
 
 class Invoice(models.Model):
