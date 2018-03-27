@@ -10,13 +10,12 @@ class Gender(models.Model):
 class Language(models.Model):
     lang = models.CharField(max_length=100, unique=True)
 
-class Cast(models.Model):
+class CrewProfile(models.Model):
     name = models.CharField(max_length=100, blank=True, default='')
     age = models.IntegerField(default=0)
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     link = models.TextField(default="")
     description = models.TextField(default="")
-    cast_type = models.ManyToManyField(CastType)
 
     def __str__(self):
         return self.name
@@ -27,6 +26,11 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.genre
+
+class MovieCrew(models.Model):
+    role = models.ForeignKey(CastType, on_delete=models.CASCADE)
+    profile = models.ForeignKey(CrewProfile, on_delete=models.CASCADE)
+    
 
 
 class UserProfile(User):
@@ -40,7 +44,7 @@ class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    casts = models.ManyToManyField(Cast)
+    crew = models.ManyToManyField(MovieCrew)
     genres = models.ManyToManyField(Genre)
 
     def __str__(self):
