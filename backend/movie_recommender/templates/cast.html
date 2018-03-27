@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <a href="{{cast.link}}">{{cast.name}}</a>
+    {{cast.description}}
+
+    <div>
+        Popular movies:
+        {% for movie in movies %}
+            {{movie}}
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block title %}
+    {{cast.name}}
+{% endblock %}

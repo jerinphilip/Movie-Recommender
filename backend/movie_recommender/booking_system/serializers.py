@@ -3,10 +3,10 @@ from rest_framework import serializers
 from .models import *
 
 
-class CastSerializer(serializers.ModelSerializer):
+class CrewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cast
-        fields = ['id', 'name', 'age', 'description', 'gender', 'link', 'cast_type']
+        model = CrewProfile
+        fields = ['id', 'name', 'age', 'description', 'gender', 'link', 'role']
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class MovieSerializer(serializers.ModelSerializer):
-    casts = CastSerializer(many=True, read_only=True)
+    casts = CrewSerializer(many=True, read_only=True)
     genres = GenreSerializer(read_only=True, many=True)
 
     class Meta:

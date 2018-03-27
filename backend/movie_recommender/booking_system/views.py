@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import CastSerializer, Cast, MovieSerializer, Movie
+from .serializers import CrewSerializer, CrewProfile, MovieSerializer, Movie
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -8,6 +8,8 @@ from django.urls import reverse
 from jinja2 import Environment
 from django.template.loader import render_to_string
 from django.http import HttpResponse
+from django.core import serializers
+import json
 
 # Create your views here.
 
@@ -21,19 +23,19 @@ def environment(**options):
     return env
 
 
-class CastList(generics.ListCreateAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class CastDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class MovieList(generics.ListCreateAPIView):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
+# class CastList(generics.ListCreateAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class CastDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class MovieList(generics.ListCreateAPIView):
+#     queryset = Movie.objects.all()
+#     serializer_class = MovieSerializer
 
 
 def signup(request):
@@ -50,8 +52,30 @@ def signup(request):
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
+def search(request):
+    movie_list = Movie.objects.all()
+    for movie in movie_list:
+        print("<{}>".format(movie.title))
+    print(movie_list)
+    movie_filter = UserFilter(request.GET, queryset=movie_list)
+    print(movie_filter.qs)
+    return render(request, 'movie_list.html', {'filter': movie_filter})
+
 
 def show_movies(request):
     queryset = Movie.objects.all()
-    movie_list = [render_to_string("movie_thumbnail.html", {"name": movie.title, "synopsis": movie.synopsis}) for movie in queryset]
+    movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in queryset]
     return render(request, 'movies.html', {'movies': movie_list})
+
+
+def show_cast(request, cast_id):
+    if request.method == "POST":
+        return HttpResponse("Only supports GET request")
+
+    cast = CrewProfile.objects.get(id=cast_id)
+    cast_data = CrewSerializer(cast)
+
+    movie_list = cast.movie_set.all()
+    movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in movie_list]
+
+    return render(request, 'cast.html', {"cast": cast_data.data, "movies": movie_list})

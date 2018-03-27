@@ -19,6 +19,7 @@ from django.contrib.auth import views as auth_views
 from django.conf.urls import url
 from booking_system import views as core_views
 from django.views.generic import RedirectView
+#from movie_recommender.search import views
 
 
 
@@ -29,5 +30,6 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, name='logout'),
     url(r'^signup/$', core_views.signup, name='signup'),
     url(r'^accounts/profile/$', RedirectView.as_view(url='/default/', permanent=False)),
+    url(r'^search/$', core_views.search, name='search'),
 ]
 
