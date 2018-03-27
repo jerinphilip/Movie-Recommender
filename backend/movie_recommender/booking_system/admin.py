@@ -4,9 +4,11 @@ from .models import *
 
 # Register your models here.
 admin.site.register(Movie)
-admin.site.register(Cast)
+admin.site.register(MovieCrew)
+admin.site.register(CrewProfile)
 admin.site.register(Theater)
 admin.site.register(Genre)
 admin.site.register(Show)
 admin.site.register(Screen)
 admin.site.register(SeatType)
+admin.site.register(CastType)

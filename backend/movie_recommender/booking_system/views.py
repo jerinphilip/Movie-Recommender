@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import CastSerializer, Cast, MovieSerializer, Movie
+# from .serializers import CastSerializer, Cast, MovieSerializer, Movie
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -21,19 +21,19 @@ def environment(**options):
     return env
 
 
-class CastList(generics.ListCreateAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class CastDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class MovieList(generics.ListCreateAPIView):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
+# class CastList(generics.ListCreateAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class CastDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class MovieList(generics.ListCreateAPIView):
+#     queryset = Movie.objects.all()
+#     serializer_class = MovieSerializer
 
 
 def signup(request):
