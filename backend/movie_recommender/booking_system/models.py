@@ -20,7 +20,6 @@ class CrewProfile(models.Model):
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     link = models.TextField(default="")
     description = models.TextField(default="")
-    role = models.ManyToManyField(CastType)
 
     def __str__(self):
         return self.name
@@ -39,12 +38,18 @@ class UserProfile(User):
     phone = models.CharField(default="", max_length=10)
     genre_pref = models.ManyToManyField(Genre)
 
+class Crew(models.Model):
+    profile = models.ForeignKey(CrewProfile, on_delete=models.CASCADE)
+    role = models.ForeignKey(CastType, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ['profile', 'role']
 
 class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    crew = models.ManyToManyField(CrewProfile)
+    crew = models.ManyToManyField(Crew)
     genres = models.ManyToManyField(Genre)
 
     def __str__(self):
