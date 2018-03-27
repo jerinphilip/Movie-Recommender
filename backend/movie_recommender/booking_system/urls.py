@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
 from rest_framework.authtoken import views as drf_views
@@ -13,7 +14,8 @@ from rest_framework.authtoken import views as drf_views
 # urlpatterns = format_suffix_patterns(urlpatterns)
 
 urlpatterns = [
-    url('', views.index, name='index')
+    path('/', views.show_movies, name='index'),
+    url(r'cast/(?P<cast_id>\d+)/$', views.show_cast, name='show_cast'),
 ]
 
 

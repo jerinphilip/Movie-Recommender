@@ -6,6 +6,10 @@
 Install `virtualenv` from os repos.
 
 ```
+sudo apt-get install virtualenv
+```
+
+```
 virtualenv env --python=/usr/bin/python3
 . env/bin/activate
 ```
@@ -41,7 +45,7 @@ python manage.py seed --path seed/movie_metadata.csv
 ```
 python manage.py runserver
 ```
-### Login to localhost:8000/admin (assuming you created admin/superuser above)
+* Login to localhost:8000/admin (assuming you created admin/superuser above)
 
 
 
