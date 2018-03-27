@@ -7,7 +7,7 @@ from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import reverse
 from jinja2 import Environment
 from django.template.loader import render_to_string
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseNotFound
 from django.core import serializers
 import json
 
@@ -63,9 +63,9 @@ def search(request):
 
 
 def show_movies(request):
-    queryset = Movie.objects.all()
-    movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in queryset]
-    return render(request, 'movies.html', {'movies': movie_list})
+    movies = Movie.objects.all()
+    #movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in queryset]
+    return render(request, 'movies.html', {'movies': movies})
 
 
 def show_cast(request, cast_id):
@@ -79,3 +79,27 @@ def show_cast(request, cast_id):
     movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in movie_list]
 
     return render(request, 'cast.html', {"cast": cast_data.data, "movies": movie_list})
+
+def running(request):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def upcoming(request):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def payment(request):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def book_show(request, show_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def movie(request, movie_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def confirm_booking(request, show_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def crew(request, crew_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def theater(request, theater_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')

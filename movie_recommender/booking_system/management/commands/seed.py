@@ -122,7 +122,7 @@ class Command(BaseCommand):
 
     def seed(self, path):
         df = pd.read_csv(path)
-        df = df.head()
+        df = df.head(50)
         self._seed_cast_type()
         self._seed_gender()
         self._seed_genres(df["genres"])
