@@ -24,7 +24,7 @@ from django.views.generic import RedirectView
 
 
 urlpatterns = [
-    path(r'default/', include('booking_system.urls')),
+    path(r'', include('booking_system.urls')),
     path(r'admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, name='login'),
     url(r'^logout/$', auth_views.logout, name='logout'),
