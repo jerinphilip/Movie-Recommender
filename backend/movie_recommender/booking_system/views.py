@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import CastSerializer, Cast, MovieSerializer, Movie
+from .serializers import CrewSerializer, CrewProfile, MovieSerializer, Movie
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -23,19 +23,19 @@ def environment(**options):
     return env
 
 
-class CastList(generics.ListCreateAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class CastDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Cast.objects.all()
-    serializer_class = CastSerializer
-
-
-class MovieList(generics.ListCreateAPIView):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
+# class CastList(generics.ListCreateAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class CastDetail(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Cast.objects.all()
+#     serializer_class = CastSerializer
+# 
+# 
+# class MovieList(generics.ListCreateAPIView):
+#     queryset = Movie.objects.all()
+#     serializer_class = MovieSerializer
 
 
 def signup(request):
@@ -63,8 +63,8 @@ def show_cast(request, cast_id):
     if request.method == "POST":
         return HttpResponse("Only supports GET request")
 
-    cast = Cast.objects.get(id=cast_id)
-    cast_data = CastSerializer(cast)
+    cast = CrewProfile.objects.get(id=cast_id)
+    cast_data = CrewSerializer(cast)
 
     movie_list = cast.movie_set.all()
     movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in movie_list]
