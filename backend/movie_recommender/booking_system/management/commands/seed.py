@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 import booking_system.models as M
 import pandas as pd
 import funcy as fy
+import numpy
 
 
 class Command(BaseCommand):
@@ -54,7 +55,7 @@ class Command(BaseCommand):
             actors.add(c[2])
             actors.add(c[3])
         for director in directors:
-            _cast = M.Cast.objects.create(name=director, cast_type=2, gender=1,     )
+            _cast = M.Cast.objects.create(name=director, cast_type=2, gender=1)
             _cast.save()
         for actor in actors:
             _cast = M.Cast.objects.create(name=actor, cast_type=1, gender=1)
