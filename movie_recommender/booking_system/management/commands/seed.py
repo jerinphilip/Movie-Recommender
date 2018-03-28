@@ -120,9 +120,26 @@ class Command(BaseCommand):
                                                   time=time)
                     _show.save()
 
+    def _seed_crew_profile(self, crew_profile):
+        M.CrewProfile.objects.all().delete()
+        _crew=set()
+        for i, c in crew_profile.iterrows():
+            _crew.add(c[0])
+            _crew.add(c[1])
+            _crew.add(c[2])
+            _crew.add(c[3])
+        g = "Male"
+        for cp in _crew:
+            # print(cp)
+            _gender = M.Gender.objects.get(name=g)
+            _crew_profile = M.CrewProfile.objects.create(name=cp,gender=_gender)
+            _crew_profile.save()
+
+
     def seed(self, path):
         df = pd.read_csv(path)
-        df = df.head(50)
+        # df = df.head(50)
+        df = df.head(5)
         self._seed_cast_type()
         self._seed_gender()
         self._seed_genres(df["genres"])
@@ -132,6 +149,9 @@ class Command(BaseCommand):
         # self._seed_cast(cs)
         movie_params = [9, 11, 17, 19, 23]
         ms = df.iloc[:, movie_params]
+        crew_profile_params=[1,10,6,14]
+        cpp=df.iloc[:, crew_profile_params]
+        self._seed_crew_profile(cpp)
         self._seed_movies(ms)
         self._seed_seat_type()
         self._seed_theater()
