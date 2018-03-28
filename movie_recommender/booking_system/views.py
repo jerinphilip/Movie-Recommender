@@ -10,6 +10,12 @@ from django.template.loader import render_to_string
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core import serializers
 import json
+#from booking_system.models import Genre
+from django.contrib.auth.models import User
+from django.shortcuts import render
+from .filters import UserFilter
+#import django_filters
+from itertools import chain
 
 # Create your views here.
 
@@ -54,11 +60,11 @@ def signup(request):
 
 def search(request):
     movie_list = Movie.objects.all()
-    for movie in movie_list:
-        print("<{}>".format(movie.title))
-    print(movie_list)
+    #for movie in movie_list:
+     #   print("<{}>".format(movie.title))
+    #print(movie_list)
     movie_filter = UserFilter(request.GET, queryset=movie_list)
-    print(movie_filter.qs)
+    #print(movie_filter.qs)
     return render(request, 'movie_list.html', {'filter': movie_filter})
 
 

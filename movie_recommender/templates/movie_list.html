@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit">Search</button>
+  </form>
+  <ul>
+  {% for movie in filter.qs %}
+    <li>{{ movie.title }}</li>
+  {% endfor %}
+  </ul>
+{% endblock %}
