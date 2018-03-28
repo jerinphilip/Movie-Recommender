@@ -19,6 +19,12 @@ class Language(models.Model):
 
     def __str__(self):
         return self.lang
+    
+class StatusType(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.name
 
 
 class CrewProfile(models.Model):
@@ -95,12 +101,6 @@ class Show(models.Model):
     time = models.TimeField()
 
 
-class Booking(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    seat_identifier = models.CharField(max_length=100, default="")
-    show  = models.ForeignKey(Show, on_delete=models.CASCADE)
-    type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
-
 class Seat(models.Model):
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
     row_id = models.CharField(max_length=3)
@@ -110,12 +110,20 @@ class Seat(models.Model):
         return '{}-{}'.format(self.row_id, self.col_id)
 
 
+class Booking(models.Model):
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    seats = models.ManyToManyField(Seat)
+    show  = models.ForeignKey(Show, on_delete=models.CASCADE)
+    type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
+
 
 class Invoice(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
     ticket_price = models.FloatField(default=0)
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
+    total_price = models.FloadField(default=0)
+    status = models.ForeignKey(StatusType, on_delete=models.CASCADE)
 
 
 class Review(models.Model):
