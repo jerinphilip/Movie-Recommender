@@ -122,7 +122,7 @@ class Invoice(models.Model):
     ticket_price = models.FloatField(default=0)
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
-    total_price = models.FloadField(default=0)
+    total_price = models.FloatField(default=0)
     status = models.ForeignKey(StatusType, on_delete=models.CASCADE)
 
 
