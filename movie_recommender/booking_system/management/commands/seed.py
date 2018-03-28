@@ -41,19 +41,27 @@ class Command(BaseCommand):
             _lang = M.Language.objects.create(lang=lang)
             _lang.save()
 
-    # def _seed_crew_profile(self, crew_profile):
-    #     M.CrewProfile.objects.all().delete()
-    #     crew = set()
-    #     for i, c in crew_profile.iterrows():
-    #         crew.add(c[0])
-    #         crew.add(c[1])
-    #         crew.add(c[2])
-    #         crew.add(c[3])
-        
-    #     for cp in crew_profile:
-    #         _gender = M.Gender.objects.get(lang=lang)
-    #         _crew_profile = M.CrewProfile.objects.create(name=director, cast_type=2, gender=1)
-    #         _cast.save()
+    def _seed_status_type(self):
+        M.StatusType.objects.all().delete()
+        s = ["Success", "Failure", "In Progress"] #Creating three cast types
+        for i in range(3): 
+            name = s[i]
+            _status_type = M.StatusType.objects.create(name=name)
+            _status_type.save()
+
+    def _seed_crew_profile(self, crew_profile):
+        M.CrewProfile.objects.all().delete()
+        _crew=set()
+        for i, c in crew_profile.iterrows():
+            _crew.add(c[0])
+            _crew.add(c[1])
+            _crew.add(c[2])
+            _crew.add(c[3])
+        g = "Male"
+        for cp in _crew:
+            _gender = M.Gender.objects.get(name=g)
+            _crew_profile = M.CrewProfile.objects.create(name=cp,gender=_gender)
+            _crew_profile.save()
 
     def _seed_genres(self, genres):
         M.Genre.objects.all().delete()
@@ -64,6 +72,28 @@ class Command(BaseCommand):
         for genre in genres:
             _genre = M.Genre.objects.create(genre=genre)
             _genre.save()
+
+    def _seed_crew(self, crew):
+        M.Crew.objects.all().delete()
+        directors = set()
+        actors = set()
+        for i, c in crew.iterrows():
+            directors.add(c[0])
+            actors.add(c[1])
+            actors.add(c[2])
+            actors.add(c[3])
+        d = "Director"
+        a = "Actor"
+        for director in directors:
+            _profile = M.CrewProfile.objects.get(name=director)
+            _role = M.CastType.objects.get(name=d)
+            _crew = M.Crew.objects.create(profile=_profile, role=_role)
+            _crew.save()
+        for actor in actors:
+            _profile = M.CrewProfile.objects.get(name=actor)
+            _role = M.CastType.objects.get(name=a)
+            _crew = M.Crew.objects.create(profile=_profile, role=_role)
+            _crew.save()
 
     def _seed_movies(self, movies):
         M.Movie.objects.all().delete()
@@ -120,43 +150,45 @@ class Command(BaseCommand):
                                                   time=time)
                     _show.save()
 
-    def _seed_crew_profile(self, crew_profile):
-        M.CrewProfile.objects.all().delete()
-        _crew=set()
-        for i, c in crew_profile.iterrows():
-            _crew.add(c[0])
-            _crew.add(c[1])
-            _crew.add(c[2])
-            _crew.add(c[3])
-        g = "Male"
-        for cp in _crew:
-            # print(cp)
-            _gender = M.Gender.objects.get(name=g)
-            _crew_profile = M.CrewProfile.objects.create(name=cp,gender=_gender)
-            _crew_profile.save()
-
+    def _seed_seat(self):
+        M.Seat.objects.all().delete()
+        _screens = list(M.Screen.objects.all())
+        _rows = map(chr, range(ord('A'), ord('Z')+1)) # rows from A - Z
+        _columns = list(range(1,11)) # columns from 1 - 10
+        for _screen in _screens:
+            for _row in _rows:
+                for _column in _columns:
+                    _seat = M.Seat.objects.create(screen=_screen,row_id=_row,
+                                                  col_id=_column)
+                    _seat.save()
 
     def seed(self, path):
         df = pd.read_csv(path)
-        # df = df.head(50)
-        df = df.head(5)
+        df = df.head(50)
+        # df = df.head(5)
         self._seed_cast_type()
         self._seed_gender()
-        self._seed_genres(df["genres"])
         self._seed_languages(df["language"])
-        # cast_params = [1, 6, 10, 14]
-        # cs = df.iloc[:, cast_params]
-        # self._seed_cast(cs)
+        self._seed_status_type()
+        crew_profile_params=[1,10,6,14]
+        cpp = df.iloc[:, crew_profile_params]
+        self._seed_crew_profile(cpp)
+        self._seed_genres(df["genres"])
+        # self._seed_user_profile()
+        crew_params=[1,10,6,14]
+        cp = df.iloc[:, crew_params]
+        self._seed_crew(cp)
         movie_params = [9, 11, 17, 19, 23]
         ms = df.iloc[:, movie_params]
-        crew_profile_params=[1,10,6,14]
-        cpp=df.iloc[:, crew_profile_params]
-        self._seed_crew_profile(cpp)
         self._seed_movies(ms)
         self._seed_seat_type()
         self._seed_theater()
         self._seed_screens()
         self._seed_shows()
+        self._seed_seat()
+        # self._seed_booking()
+        # self._seed_invoice()
+        # self._seed_review(s)
 
 # 0 color
 # 1 director_name
