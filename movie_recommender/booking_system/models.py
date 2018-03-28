@@ -19,6 +19,12 @@ class Language(models.Model):
 
     def __str__(self):
         return self.lang
+    
+class StatusType(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    
+    def __str__(self):
+        return self.name
 
 
 class CrewProfile(models.Model):
@@ -116,6 +122,8 @@ class Invoice(models.Model):
     ticket_price = models.FloatField(default=0)
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
+    total_price = models.FloadField(default=0)
+    status = models.ForeignKey(StatusType, on_delete=models.CASCADE)
 
 
 class Review(models.Model):
