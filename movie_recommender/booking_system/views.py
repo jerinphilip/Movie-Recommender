@@ -99,7 +99,11 @@ def book_show(request, show_id):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
 def movie(request, movie_id):
-    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+    # print(movie_id, type(movie_id))
+    _movie = Movie.objects.get(pk=movie_id)
+    # print(_movie.genres)
+    return render(request, 'movie.html', {"movie": _movie})
+    #return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
 def confirm_booking(request, show_id):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
