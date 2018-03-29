@@ -1,13 +1,19 @@
-
 from .singleton import Singleton
+from ..booking_system.models import *
 
-class Booker(metaclass=Singleton):
-    def retrieve(Show):
+class Booker(Singleton):
+    def retrieve(show):
+        all_seats = show.screen.seat_set.all()
+        booked_setas = Booking.objects.filter()
+        - Booking.objects.get(invoice.status != "Failed", show=Show)
         pass
 
-    def select(Seat, Show, User):
-        pass
-    def book(Seat, Show, User):
+    def select(seat, show, user):
         pass
 
+    def book(seat, show, user):
+        pass
+
+    def cancel(seat, show, user):
+        pass
 

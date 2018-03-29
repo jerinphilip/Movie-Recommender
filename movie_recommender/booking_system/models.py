@@ -123,7 +123,7 @@ class Invoice(models.Model):
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
     total_price = models.FloatField(default=0)
-    status = models.ForeignKey(StatusType, on_delete=models.CASCADE)
+    status = models.ForeignKey(StatusType, on_delete=models.CASCADE, default=0)
 
 
 class Review(models.Model):
