@@ -1,7 +1,9 @@
 from .models import UserProfile
-from django.forms import ModelForm
+from django import forms
 
-class UserProfileCreationForm(ModelForm):
+class UserProfileCreationForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
     class Meta:
         model = UserProfile
         fields = ["age", "gender", "phone", "genre_pref", "username", "password"]  
