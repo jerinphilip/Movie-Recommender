@@ -1,5 +1,5 @@
 from haystack import indexes
-from .models import Movie,Genre,Language
+from .models import Movie,Genre,Theater,CrewProfile
 
 class MovieIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.EdgeNgramField(document=True, use_template=True)
@@ -19,3 +19,20 @@ class GenreIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_model(self):
         return Genre
+
+
+class TheaterIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.EdgeNgramField(document=True, use_template=True)
+    title = indexes.EdgeNgramField(model_attr='name')
+    id = indexes.EdgeNgramField(model_attr='id')
+
+    def get_model(self):
+        return Theater
+
+class CrewProfileIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.EdgeNgramField(document=True, use_template=True)
+    title = indexes.EdgeNgramField(model_attr='name')
+    id = indexes.EdgeNgramField(model_attr='id')
+
+    def get_model(self):
+        return CrewProfile
