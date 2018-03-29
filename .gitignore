@@ -39,3 +39,5 @@ tests/.coverage
 build/
 tests/report/
 env/
+*.undodir/
+*Session.vim
