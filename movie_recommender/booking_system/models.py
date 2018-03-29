@@ -118,7 +118,7 @@ class Booking(models.Model):
 
 
 class Invoice(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE, primary_key=True)
     ticket_price = models.FloatField(default=0)
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
