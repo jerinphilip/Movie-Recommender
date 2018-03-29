@@ -81,7 +81,6 @@ class Theater(models.Model):
     name = models.CharField(max_length=100, default="")
     location_lat = models.FloatField(default=0)
     location_long = models.FloatField(default=0)
-    seat_types = models.ManyToManyField(SeatType)
 
     def __str__(self):
         return self.name
@@ -105,6 +104,7 @@ class Seat(models.Model):
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
     row_id = models.CharField(max_length=3)
     col_id = models.CharField(max_length=5)
+    seat_type = models.ForeignKey(SeatType, on_delete=models.CASCADE,default=0)
 
     def __str__(self):
         return '{}-{}'.format(self.row_id, self.col_id)
@@ -114,7 +114,6 @@ class Booking(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     seats = models.ManyToManyField(Seat)
     show  = models.ForeignKey(Show, on_delete=models.CASCADE)
-    type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
 
 
 class Invoice(models.Model):
