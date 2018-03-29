@@ -1,3 +1,4 @@
-{{ movie.title }}
-{{ movie.language }}
-{{ movie.synopsis }}
+{{ object.id }}
+{{ object.title }}
+{{ object.language }}
+{{ object.synopsis }}
