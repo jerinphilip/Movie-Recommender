@@ -16,6 +16,7 @@ from django.shortcuts import render
 from .filters import UserFilter
 #import django_filters
 from itertools import chain
+from .forms import UserProfileCreationForm
 
 # Create your views here.
 
@@ -46,7 +47,7 @@ def environment(**options):
 
 def signup(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = UserProfileCreationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data.get('username')
@@ -55,7 +56,7 @@ def signup(request):
             login(request, user)
             return redirect('home')
     else:
-        form = UserCreationForm()
+        form = UserProfileCreationForm()
     return render(request, 'signup.html', {'form': form})
 
 def search(request):
