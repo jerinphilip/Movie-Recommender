@@ -30,6 +30,6 @@ urlpatterns = [
     url(r'^logout/$', auth_views.logout, name='logout'),
     url(r'^signup/$', core_views.signup, name='signup'),
     url(r'^accounts/profile/$', RedirectView.as_view(url='/default/', permanent=False)),
-    url(r'^search/$', core_views.search, name='search'),
+    url(r'^search/', include('haystack.urls')),
 ]
 
