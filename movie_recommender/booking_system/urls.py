@@ -16,6 +16,7 @@ from rest_framework.authtoken import views as drf_views
 urlpatterns = [
     path('', views.show_movies, name='index'),
     url(r'cast/(?P<cast_id>\d+)/$', views.show_cast, name='show_cast'),
+    path('cast', views.show_cast, name='show_cast'),
     path('running', views.running, name='running'),
     path('upcoming', views.upcoming, name='running'),
     path('book/<int:show_id>/', views.book_show, name='book_show'),
