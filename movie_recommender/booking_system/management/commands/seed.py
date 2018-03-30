@@ -73,6 +73,22 @@ class Command(BaseCommand):
             _genre = M.Genre.objects.create(genre=genre)
             _genre.save()
 
+    def _seed_user_profile(self):
+        M.UserProfile.objects.all().delete()
+        _age = 23
+        phones = ["0123456789", "1234567890", "2345678901"]#, "3456789012", "4567890123"]
+        usernames = ['Harshil', 'Jerin', 'Mandar']
+        passwords = ['Harshil', 'Jerin', 'Mandar']
+        gen = "Male"
+        genre_pref = ["Sci-Fi", "Fantasy"]
+        _genre_pref = [M.Genre.objects.get(genre=g) for g in genre_pref]
+        _gender = M.Gender.objects.get(name=gen)
+        #creating 3 users
+        for i in range(3):
+            _user_profile = M.UserProfile.objects.create(gender=_gender, age=_age, phone=phones[i], username=usernames[i], password=passwords[i])
+            _user_profile.genre_pref.set(_genre_pref)
+            _user_profile.save()
+
     def _seed_crew(self, crew):
         M.Crew.objects.all().delete()
         directors = set()
@@ -98,11 +114,15 @@ class Command(BaseCommand):
     def _seed_movies(self, movies):
         M.Movie.objects.all().delete()
         for i, m in movies.iterrows():
-            genres, title, link, lang, year = list(m.values)
+            title, lang, genres, crew1, crew2, crew3, crew4 = list(m.values)
             genres = genres.split('|')
             _lang = M.Language.objects.get(lang=lang)
             _movie = M.Movie.objects.create(title=title,
                     language=_lang)
+            #TODO roles of crew
+            crew = [crew1, crew2, crew3, crew4]
+            _crew = M.Crew.objects.filter(profile__name__in=crew)
+            _movie.crew.set(_crew)
             _genres = [M.Genre.objects.get(genre=g) for g in genres]
             _movie.genres.set(_genres)
             _movie.save()
@@ -162,10 +182,21 @@ class Command(BaseCommand):
                                                   col_id=_column)
                     _seat.save()
 
+    def _seed_booking(self):
+        M.Booking.objects.all().delete()
+        phones = ["0123456789","1234567890", "2345678901"]#, "3456789012", "4567890123"]
+        for p in phones:           
+            _user = M.UserProfile.objects.get(phone=p)
+            _seats = M.Seat.objects.get(row_id='A', col_id=3)
+            _type = M.SeatType.objects.get(name="Regular")
+            _show = M.Show.objects.get(time='10:00:00')
+            _booking = M.Booking.objects.create(user=_user, seats=_seats, show=_show, type=_type)
+            _booking.save()
+
     def seed(self, path):
         df = pd.read_csv(path)
-        df = df.head(50)
-        # df = df.head(5)
+        # df = df.head(50)
+        df = df.head(5)
         self._seed_cast_type()
         self._seed_gender()
         self._seed_languages(df["language"])
@@ -174,18 +205,18 @@ class Command(BaseCommand):
         cpp = df.iloc[:, crew_profile_params]
         self._seed_crew_profile(cpp)
         self._seed_genres(df["genres"])
-        # self._seed_user_profile()
+        self._seed_user_profile()
         crew_params=[1,10,6,14]
         cp = df.iloc[:, crew_params]
         self._seed_crew(cp)
-        movie_params = [9, 11, 17, 19, 23]
+        movie_params = [11, 19, 9, 1, 10, 6, 14]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
-        self._seed_seat_type()
-        self._seed_theater()
-        self._seed_screens()
-        self._seed_shows()
-        self._seed_seat()
+        # self._seed_seat_type()
+        # self._seed_theater()
+        # self._seed_screens()
+        # self._seed_shows()
+        # self._seed_seat()
         # self._seed_booking()
         # self._seed_invoice()
         # self._seed_review(s)

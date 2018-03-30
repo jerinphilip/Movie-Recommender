@@ -58,6 +58,9 @@ class Crew(models.Model):
     class Meta:
         unique_together = ['profile', 'role']
 
+    def __str__(self):
+        return self.profile.name
+
 class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")

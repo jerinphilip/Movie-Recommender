@@ -1,5 +1,5 @@
 from rest_framework import generics
-from .serializers import CrewSerializer, CrewProfile, MovieSerializer, Movie
+from .serializers import CrewSerializer, CrewProfile, MovieSerializer, Movie, Crew
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
@@ -17,6 +17,7 @@ from .filters import UserFilter
 #import django_filters
 from itertools import chain
 from .forms import UserProfileCreationForm
+from django.core.exceptions import ViewDoesNotExist
 
 # Create your views here.
 
@@ -75,17 +76,19 @@ def show_movies(request):
     return render(request, 'movies.html', {'movies': movies})
 
 
-def show_cast(request, cast_id):
+def show_cast(request):
     if request.method == "POST":
         return HttpResponse("Only supports GET request")
 
-    cast = CrewProfile.objects.get(id=cast_id)
-    cast_data = CrewSerializer(cast)
+    _crew = CrewProfile.objects.all()
+    return render(request, 'cast.html', {'crews': _crew})
+    # cast = CrewProfile.objects.get(id=cast_id)
+    # cast_data = CrewSerializer(cast)
 
-    movie_list = cast.movie_set.all()
-    movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in movie_list]
+    # movie_list = cast.movie_set.all()
+    # movie_list = [render_to_string("movie_thumbnail.html", MovieSerializer(movie).data) for movie in movie_list]
 
-    return render(request, 'cast.html', {"cast": cast_data.data, "movies": movie_list})
+    # return render(request, 'cast.html', {"cast": cast_data.data, "movies": movie_list})
 
 def running(request):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
@@ -101,16 +104,23 @@ def book_show(request, show_id):
 
 def movie(request, movie_id):
     # print(movie_id, type(movie_id))
-    _movie = Movie.objects.get(pk=movie_id)
-    # print(_movie.genres)
-    return render(request, 'movie.html', {"movie": _movie})
-    #return HttpResponseNotFound('<h1>Page under construction?</h1>')
+    try:
+        _movie = Movie.objects.get(pk=movie_id)
+        return render(request, 'movie.html', {"movie": _movie})
+    except Movie.DoesNotExist:
+        return HttpResponseNotFound('<h1>Movie Does not exist</h1>')
 
 def confirm_booking(request, show_id):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
 def crew(request, crew_id):
-    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+    try:
+        _crew = CrewProfile.objects.get(pk=crew_id)
+        _crew_type = Crew.objects.get(profile=crew_id)
+        _movies = Movie.objects.get(crew=_crew_type.id)
+        return render(request, 'crew_profile.html', {"crew": _crew, "crew_type" : _crew_type, "movies": _movies})
+    except CrewProfile.DoesNotExist:
+        return HttpResponseNotFound('<h1>Crew profile Does not exist</h1>')
 
 def theater(request, theater_id):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
