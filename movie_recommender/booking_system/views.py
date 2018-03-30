@@ -17,6 +17,7 @@ from .filters import UserFilter
 #import django_filters
 from itertools import chain
 from .forms import UserProfileCreationForm
+from django.core.exceptions import ViewDoesNotExist
 
 # Create your views here.
 
@@ -101,12 +102,14 @@ def book_show(request, show_id):
 
 def movie(request, movie_id):
     # print(movie_id, type(movie_id))
-    _movie = Movie.objects.get(pk=movie_id)
-    # print(_movie.genres)
-    return render(request, 'movie.html', {"movie": _movie})
-    #return HttpResponseNotFound('<h1>Page under construction?</h1>')
+    try:
+        _movie = Movie.objects.get(pk=movie_id)
+        return render(request, 'movie.html', {"movie": _movie})
+    except Movie.DoesNotExist:
+        return HttpResponseNotFound('<h1>Movie Does not exist</h1>')
 
 def confirm_booking(request, show_id):
+
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
 def crew(request, crew_id):

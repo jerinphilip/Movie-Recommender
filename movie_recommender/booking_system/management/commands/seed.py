@@ -212,11 +212,11 @@ class Command(BaseCommand):
         movie_params = [11, 19, 9, 1, 10, 6, 14]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
-        self._seed_seat_type()
-        self._seed_theater()
-        self._seed_screens()
-        self._seed_shows()
-        self._seed_seat()
+        # self._seed_seat_type()
+        # self._seed_theater()
+        # self._seed_screens()
+        # self._seed_shows()
+        # self._seed_seat()
         # self._seed_booking()
         # self._seed_invoice()
         # self._seed_review(s)
