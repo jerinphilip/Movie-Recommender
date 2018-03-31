@@ -67,6 +67,9 @@ class Movie(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     crew = models.ManyToManyField(Crew)
     genres = models.ManyToManyField(Genre)
+    release_date = models.DateField()
+    tagline = models.TextField(default="")
+    imdb_id = models.CharField(unique=True, max_length=20)
 
     def __str__(self):
         return self.title
@@ -142,3 +145,11 @@ class Review(models.Model):
     rating = models.IntegerField(default=0)
     description = models.TextField(default="")
 
+    class Meta:
+        unique_together = ['user', 'movie']
+
+class AggregateRating(models.Model):
+    movie = models.OneToOneField(Movie, on_delete=models.CASCADE)
+    average = models.FloatField(default=0)
+    count = models.IntegerField(default=0)
+    popularity = models.FloatField(default=0)

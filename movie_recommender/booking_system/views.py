@@ -18,6 +18,7 @@ from .filters import UserFilter
 from itertools import chain
 from .forms import UserProfileCreationForm
 from django.core.exceptions import ViewDoesNotExist
+from functors.recommender import PopularRecommender
 
 # Create your views here.
 
@@ -123,4 +124,15 @@ def crew(request, crew_id):
         return HttpResponseNotFound('<h1>Crew profile Does not exist</h1>')
 
 def theater(request, theater_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def popular(request):
+    recommender = PopularRecommender()
+    ordered = recommender.top(5)
+    print(ordered)
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def popular_by_genre(request, genre):
+    recommender = PopularRecommender()
+    ordered = recommender.top_by_genre(genre, 5)
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
