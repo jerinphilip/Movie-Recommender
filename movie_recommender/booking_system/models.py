@@ -72,16 +72,9 @@ class Movie(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     crew = models.ManyToManyField(Crew)
     genres = models.ManyToManyField(Genre)
-    release_date = models.DateField()
+    #release_date = models.DateField()
     tagline = models.TextField(default="")
-    imdb_id = models.CharField(unique=True, max_length=20)
-
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            # TODO call recommender, new movie added
-            pass
-
-        return super(Movie, self).save(args, kwargs)
+    #imdb_id = models.CharField(unique=True, max_length=20)
 
     def __str__(self):
         return self.title
