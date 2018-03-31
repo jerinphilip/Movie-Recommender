@@ -29,3 +29,9 @@ def cast(serialized):
     pprint(dt)
     return dt
 
+def director(crew):
+    for member in crew:
+        if member['job'] == 'Director':
+            return member
+    return None
+

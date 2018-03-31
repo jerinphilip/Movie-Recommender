@@ -126,12 +126,23 @@ class Command(BaseCommand):
             _profile.save()
         return _profile
 
+    def _add_movie_crew(self, crew, movie_id):
+        try:
+            movie = M.Movie.objects.get(pk=movie_id)
+            movie.crew.add(crew)
+            movie.save()
+        except exceptions.ObjectDoesNotExist:
+            print("Deferring movie!")
 
-    def _something(self, cast):
+
+    def _casts(self, cast, movie_id):
         cast = literal_eval(cast)
         cast_type = self._cast_type("Actor")
         for profile in cast:
             _profile = self._crew_profile(profile)
+            _crew = self._crew(_profile, cast_type)
+            self._add_movie_crew(_crew, movie_id)
+
 
     def _cast_type(self, name):
         try:
@@ -141,21 +152,30 @@ class Command(BaseCommand):
             _cast_type.save()
         return _cast_type
 
+    def _crew(self, _profile, cast_type):
+        try:
+            _crew = M.Crew.objects.get(profile=_profile, role=cast_type)
+        except exceptions.ObjectDoesNotExist:
+            _crew = M.Crew.objects.create(profile=_profile, role=cast_type)
+            _crew.save()
+        return _crew
+
 
     def prototype(self, data):
-        credits = data["credits"]
-        for i, x in credits.iterrows():
-            cast, crew, _id = x
-            _xp = lambda x: pprint(literal_eval(x))
-            #_xp(cast)
-            #print(_id)
-            self._something(cast)
-            #_xp(crew)
-
-        #M.Movie.objects.all().delete()
 
         movies = data["movies_metadata"]
         for i, movie in movies.iterrows():
             self._movie(movie)
-            print(movie["title"])
+
+        credits = data["credits"]
+        for i, x in credits.iterrows():
+            cast, crew, _id = x
+            self._casts(cast, _id)
+            director = mldt.director(literal_eval(crew))
+            if director is not None:
+                _profile = self._crew_profile(director)
+                cast_type = self._cast_type("Director")
+                _crew = self._crew(_profile, cast_type)
+                self._add_movie_crew(crew, _id)
+
 
