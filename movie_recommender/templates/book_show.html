@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% for row in matrix %}
+    {% for element in row %}
+      {% if element.selected %}
+        Hi
+      {% endif %}
+      {% if not element.selectd %}
+        Not So Much
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endblock %}

@@ -10,7 +10,7 @@ from rest_framework.authtoken import views as drf_views
 #     url(r'cast/(?P<pk>[0-9]+)/$', views.CastDetail.as_view()),
 #     url(r'^auth$', drf_views.obtain_auth_token, name='auth'),
 # ]
-# 
+#
 # urlpatterns = format_suffix_patterns(urlpatterns)
 
 urlpatterns = [
@@ -21,11 +21,10 @@ urlpatterns = [
     path('upcoming', views.upcoming, name='running'),
     path('book/<int:show_id>/', views.book_show, name='book_show'),
     path('movie/<int:movie_id>/', views.movie, name='movie'),
-    path('book/<int:show_id>/confirm', views.confirm_booking, name='confirm_booking'),
+    path('book/<int:show_id>/confirm', views.confirm_booking,
+         name='confirm_booking'),
     path('payment/', views.payment, name='payment'),
     path('crew/<int:crew_id>/', views.crew, name='crew'),
     path('theater/<int:theater_id>/', views.theater, name='theater'),
 
 ]
-
-

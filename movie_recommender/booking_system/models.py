@@ -78,7 +78,7 @@ class Movie(models.Model):
             # TODO call recommender, new movie added
             pass
 
-        super(Movie, self).save(args, kwargs)
+        return super(Movie, self).save(args, kwargs)
 
     def __str__(self):
         return self.title

@@ -18,8 +18,9 @@ from .filters import UserFilter
 from itertools import chain
 from .forms import UserProfileCreationForm
 from django.core.exceptions import ViewDoesNotExist
-
-# Create your views here.
+from .models import Show
+from functors.booker import Booker
+# Create your views here
 
 
 def environment(**options):
@@ -34,13 +35,13 @@ def environment(**options):
 # class CastList(generics.ListCreateAPIView):
 #     queryset = Cast.objects.all()
 #     serializer_class = CastSerializer
-# 
-# 
+#
+#
 # class CastDetail(generics.RetrieveUpdateDestroyAPIView):
 #     queryset = Cast.objects.all()
 #     serializer_class = CastSerializer
-# 
-# 
+#
+#
 # class MovieList(generics.ListCreateAPIView):
 #     queryset = Movie.objects.all()
 #     serializer_class = MovieSerializer
@@ -99,11 +100,29 @@ def upcoming(request):
 def payment(request):
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
+
 def book_show(request, show_id):
-    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+    booker = Booker()
+    show = Show.objects.get(show_id)
+    seats = booker.retrieve(show)
+    num_rows = max(seats, lambda i: i.row_id)
+    num_cols = max(seats, lambda i: i.col_id)
+    matrix = [[{"selected": True} for i in range(num_cols)] for i in range(num_rows)]
+
+    for seat in seats:
+        matrix[seat.row_id][seat.col_id] = {
+            "selected": False,
+            "id": seat.id,
+        }
+
+    return render(request, "book_show.html", {
+        'movie': show.movie,
+        'matrix': matrix,
+        })
+
+
 
 def movie(request, movie_id):
-    # print(movie_id, type(movie_id))
     try:
         _movie = Movie.objects.get(pk=movie_id)
         return render(request, 'movie.html', {"movie": _movie})

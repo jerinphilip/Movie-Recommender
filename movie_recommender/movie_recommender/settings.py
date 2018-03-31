@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'booking_system',
     'django_extensions',
+    'functors',
 ]
 
 MIDDLEWARE = [
@@ -131,4 +132,3 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
