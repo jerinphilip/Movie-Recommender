@@ -23,11 +23,14 @@ urlpatterns = [
     path('movie/<int:movie_id>/', views.movie, name='movie'),
     path('book/<int:show_id>/confirm', views.confirm_booking,
          name='confirm_booking'),
+    path('start_booking/<int:show_id>/', views.start_booking, name="start"),
+    path('delete_seat/<int:booking_id>/', views.delete_seat, name="delete_seat"),
+    path('add_seat/<int:booking_id>/', views.add_seat, name="add_seat"),
+    path('cancel_booking/<int:booking_id>/', views.cancel_booking, name="cancel"),
     path('payment/', views.payment, name='payment'),
     path('crew/<int:crew_id>/', views.crew, name='crew'),
     path('theater/<int:theater_id>/', views.theater, name='theater'),
     path('popular/', views.popular, name='popular'),
     path('popular/<genre>', views.popular_by_genre,
         name='popular_by_genre'),
-
 ]
