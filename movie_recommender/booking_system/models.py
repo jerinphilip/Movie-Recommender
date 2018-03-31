@@ -80,11 +80,18 @@ class SeatType(models.Model):
         return self.name
 
 
+class TheaterOwner(User):
+    age = models.IntegerField(default=0)
+    gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
+    phone = models.CharField(default="", max_length=10)
+
+
 class Theater(models.Model):
     name = models.CharField(max_length=100, default="")
     location_lat = models.FloatField(default=0)
     location_long = models.FloatField(default=0)
     seat_types = models.ManyToManyField(SeatType)
+    owner=models.ForeignKey(TheaterOwner,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

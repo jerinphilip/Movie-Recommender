@@ -49,3 +49,8 @@ python manage.py runserver
 
 
 
+### Building Indexes for Search
+
+```
+python manage.py rebuild_index
+```

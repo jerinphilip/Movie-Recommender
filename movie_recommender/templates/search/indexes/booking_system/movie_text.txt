@@ -1,0 +1,4 @@
+{{ object.id }}
+{{ object.title }}
+{{ object.language }}
+{{ object.synopsis }}
