@@ -12,6 +12,12 @@ from . import mldt
 from ast import literal_eval
 from pprint import pprint
 
+gender_map = dict([
+    (0, "Male"),
+    (1, "Female"),
+    (2, "Male")
+])
+
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
@@ -94,20 +100,62 @@ class Command(BaseCommand):
     def _language(self, lang):
         try:
             _lang = M.Language.objects.get(lang=lang)
-        except ObjectDoesNotExist:
+        except exceptions.ObjectDoesNotExist:
             _lang = M.Language.objects.create(lang=lang)
             _lang.save()
         return _lang
 
+    def _gender(self, name):
+        try:
+            _gender = M.Gender.objects.get(name=name)
+        except exceptions.ObjectDoesNotExist:
+            _gender = M.Gender.objects.create(name=name)
+            _gender.save()
+        return _gender
+
+
+    def _crew_profile(self, profile):
+        try:
+            _profile = M.CrewProfile.objects.get(name=profile["name"])
+        except exceptions.ObjectDoesNotExist:
+            _id = profile["gender"]
+            _gender = self._gender(gender_map[_id])
+            print(profile["name"], gender_map[_id])
+            _profile = M.CrewProfile.objects.create(name=profile["name"],
+                    gender=_gender)
+            _profile.save()
+        return _profile
+
+
+    def _something(self, cast):
+        cast = literal_eval(cast)
+        cast_type = self._cast_type("Actor")
+        for profile in cast:
+            _profile = self._crew_profile(profile)
+
+    def _cast_type(self, name):
+        try:
+            _cast_type = M.CastType.objects.get(name=name)
+        except exceptions.ObjectDoesNotExist:
+            _cast_type = M.CastType.objects.create(name=name)
+            _cast_type.save()
+        return _cast_type
+
+
     def prototype(self, data):
         credits = data["credits"]
-        #for i, x in credits.iterrows():
-        #    cast, crew, _id = x
-        #    mldt.cast(cast)
-            #pprint(literal_eval(crew))
-        M.Movie.objects.all().delete()
+        for i, x in credits.iterrows():
+            cast, crew, _id = x
+            _xp = lambda x: pprint(literal_eval(x))
+            #_xp(cast)
+            #print(_id)
+            self._something(cast)
+            #_xp(crew)
+
+        #M.Movie.objects.all().delete()
 
         movies = data["movies_metadata"]
         for i, movie in movies.iterrows():
             self._movie(movie)
             print(movie["title"])
+
