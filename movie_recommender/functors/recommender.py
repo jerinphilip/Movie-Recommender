@@ -1,10 +1,9 @@
 class Recommender():
     def __init__(self, params):
-        self.params = kwargs
+        pass
 
     def audience(Movie, Users):
         pass
 
     def likes(User, Movies):
         pass
-
