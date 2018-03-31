@@ -21,6 +21,9 @@ from django.core.exceptions import ViewDoesNotExist
 from .models import Show
 from functors.booker import Booker
 # Create your views here
+from functors.recommender import PopularRecommender
+
+# Create your views here.
 
 
 def environment(**options):
@@ -135,11 +138,22 @@ def confirm_booking(request, show_id):
 def crew(request, crew_id):
     try:
         _crew = CrewProfile.objects.get(pk=crew_id)
-        _crew_type = Crew.objects.get(profile=crew_id)
-        _movies = Movie.objects.get(crew=_crew_type.id)
+        #_crew_type = Crew.objects.get(profile=crew_id)
+        #_movies = Movie.objects.get(crew=_crew_type.id)
         return render(request, 'crew_profile.html', {"crew": _crew, "crew_type" : _crew_type, "movies": _movies})
     except CrewProfile.DoesNotExist:
         return HttpResponseNotFound('<h1>Crew profile Does not exist</h1>')
 
 def theater(request, theater_id):
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def popular(request):
+    recommender = PopularRecommender()
+    ordered = recommender.top(5)
+    print(ordered)
+    return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def popular_by_genre(request, genre):
+    recommender = PopularRecommender()
+    ordered = recommender.top_by_genre(genre, 5)
     return HttpResponseNotFound('<h1>Page under construction?</h1>')

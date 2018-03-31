@@ -72,6 +72,9 @@ class Movie(models.Model):
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     crew = models.ManyToManyField(Crew)
     genres = models.ManyToManyField(Genre)
+    release_date = models.DateField()
+    tagline = models.TextField(default="")
+    imdb_id = models.CharField(unique=True, max_length=20)
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -92,10 +95,18 @@ class SeatType(models.Model):
         return self.name
 
 
+class TheaterOwner(User):
+    age = models.IntegerField(default=0)
+    gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
+    phone = models.CharField(default="", max_length=10)
+
+
 class Theater(models.Model):
     name = models.CharField(max_length=100, default="")
     location_lat = models.FloatField(default=0)
     location_long = models.FloatField(default=0)
+    seat_types = models.ManyToManyField(SeatType)
+    owner=models.ForeignKey(TheaterOwner,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -147,3 +158,12 @@ class Review(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0)
     description = models.TextField(default="")
+
+    class Meta:
+        unique_together = ['user', 'movie']
+
+class AggregateRating(models.Model):
+    movie = models.OneToOneField(Movie, on_delete=models.CASCADE)
+    average = models.FloatField(default=0)
+    count = models.IntegerField(default=0)
+    popularity = models.FloatField(default=0)

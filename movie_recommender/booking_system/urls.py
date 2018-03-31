@@ -26,5 +26,8 @@ urlpatterns = [
     path('payment/', views.payment, name='payment'),
     path('crew/<int:crew_id>/', views.crew, name='crew'),
     path('theater/<int:theater_id>/', views.theater, name='theater'),
+    path('popular/', views.popular, name='popular'),
+    path('popular/<genre>', views.popular_by_genre,
+        name='popular_by_genre'),
 
 ]

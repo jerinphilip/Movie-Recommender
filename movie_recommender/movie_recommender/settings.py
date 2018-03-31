@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'booking_system',
     'django_extensions',
     'functors',
+    'haystack',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,10 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+    },
+}
