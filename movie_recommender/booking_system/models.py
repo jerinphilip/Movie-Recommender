@@ -48,8 +48,8 @@ class Genre(models.Model):
         return self.genre
 
 
-class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+class UserProfile(User):
+    #user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(default=0)
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     phone = models.CharField(default="", max_length=10)

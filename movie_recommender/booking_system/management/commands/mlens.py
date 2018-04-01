@@ -148,21 +148,17 @@ class Command(BaseCommand):
     def _add_rating(self, rating):
         uid = rating['userId'].astype(int)
         mid = rating['movieId'].astype(int)
+        movie = self.get(M.Movie, id=mid)
+        user = self.get(M.UserProfile, id=uid)
+        _rating = self.get(M.Review, user=user, movie=movie, 
+                rating=rating["rating"])
         print(uid, mid, rating["rating"]) 
-        try:
-            movie = self.get(M.Movie, id=mid)
-            user = self.get(M.Movie, id=uid)
-            _rating = self.get(M.rating, user=user, movie=movie, 
-                    rating=rating["rating"])
-            print(uid, mid, rating["rating"]) 
-        except:
-            raise
 
     def prototype(self, data):
         user = data["names_small"]
 
         def wrapped(iterator):
-            limit = 5
+            limit = 50
             if self.debug: return fy.take(limit, iterator)
             return iterator
 
@@ -176,8 +172,8 @@ class Command(BaseCommand):
         iterator = zip(movies.iterrows(), credits.iterrows())
         for pack in wrapped(iterator):
             (i, movie), (j, credit) = pack 
-            print(i, movie["title"])
             _movie = self._movie(movie)
+            print(i, movie["title"], _movie.id, movie["id"])
             cast, crew, _id = credit
             self._casts(cast, _movie)
             director = mldt.director(literal_eval(crew))
