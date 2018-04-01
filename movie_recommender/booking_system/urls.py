@@ -35,4 +35,5 @@ urlpatterns = [
     path('popular/<genre>', views.popular_by_genre,
         name='popular_by_genre'),
     path('similar/<int:movie_id>', views.similar, name='similar'),
+    path('shows/<int:movie_id>', views.shows, name='shows'),
 ]

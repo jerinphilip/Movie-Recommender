@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 import booking_system.models as M
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 import funcy as fy
 import random
@@ -173,12 +173,14 @@ class Command(BaseCommand):
     def _seed_seat(self):
         M.Seat.objects.all().delete()
         _screens = list(M.Screen.objects.all())
-        _rows = list(map(chr, range(ord('A'), ord('N')+1))) # rows from A - Z
-        _columns = list(range(1,11)) # columns from 1 - 10
+        # _rows = list(map(chr, range(ord('A'), ord('N')+1))) # rows from A - N
+        # _columns = list(range(1,11)) # columns from 1 - 10
+        _rows = list(map(chr, range(ord('A'), ord('D')+1))) # rows from A - D
+        _columns = list(range(1,4)) # columns from 1 - 3
         # A - K "Regular seats"
         for _screen in _screens:
-            mn_row, mx_row = 6, 14
-            mn_col, mx_col = 1, 10
+            mn_row, mx_row = 3, 4 # 4, 14
+            mn_col, mx_col = 1, 3 # 1, 10
             count_rows = random.randint(mn_row, mx_row)
             count_cols = random.randint(mn_col, mx_col)
             # "Regular Seats"
@@ -203,21 +205,27 @@ class Command(BaseCommand):
         M.Show.objects.all().delete()
         _screens = list(M.Screen.objects.all())
         _movies = list(M.Movie.objects.all())
-        times = [['11','00','14','15','18','00','21','00'], 
-        ['12','00','15','00','19','00','22','00'], 
-        ['11','00','14','00','18','00','21','00']]
-        u = datetime.datetime.strptime("2018-04-01","%Y-%m-%d")
+        times = [[11,00,14,15,18,00,21,00], 
+        [12,00,15,00,19,00,22,00], 
+        [11,00,14,00,18,00,21,00]]
+        u = datetime.strptime("2018-04-01","%Y-%m-%d")
         l = []
-        for i in range(14):
-            d = datetime.timedelta(days=i)
-            l.append(u + d) 
+        for i in range(14):# data for two weeks
+            d = timedelta(days=i)
+            l.append(u + d)
+        mn_day, mx_day = 1, 5 
+        mn_time, mx_time = 0, 2 
         for _screen in _screens:
             for _movie in _movies:
-                for _time in times:
-                    time = datetime.strptime(_time, '%Y-%m-%d %H:%M:%S').time()
-                    _show = M.Show.objects.create(movie=_movie,screen=_screen,
-                                                  time=time)
-                    _show.save()
+                count_days = random.randint(mn_day, mx_day)
+                time_slot = random.randint(mn_time, mx_time)
+                for t in l[:count_days]:
+                    for i in range(0, 8, 2):
+                        daytime = t.replace(hour=times[time_slot][i], minute=times[time_slot][i + 1])
+                        # time = datetime.strptime(_time, '%Y-%m-%d %H:%M:%S').time()
+                        _show = M.Show.objects.create(movie=_movie,screen=_screen,
+                                                  show_time=daytime)
+                        _show.save()
 
     # def _seed_booking(self):
     #     M.Booking.objects.all().delete()
@@ -255,7 +263,7 @@ class Command(BaseCommand):
         self._seed_theater(df2)
         self._seed_screens()
         self._seed_seat()
-        # self._seed_show()
+        self._seed_shows()
     
 # 0 color
 # 1 director_name
