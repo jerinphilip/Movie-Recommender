@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'functors',
     'haystack',
     'corsheaders',
+    'celery',
 ]
 
 MIDDLEWARE = [

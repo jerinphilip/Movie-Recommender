@@ -6,9 +6,9 @@
       <div class="row">
       {% for element in row %}
         {% if element.selected %}
-          <div class="movie_ticket"></div>
+          <div class="movie_ticket unselectable"></div>
         {% endif %}
-        {% if not element.selectd %}
+        {% if not element.selected %}
           <div class="movie_ticket selectable" id={{element.id}}></div>
         {% endif %}
       {% endfor %}
@@ -16,9 +16,16 @@
     {% endfor %}
   </div>
 
+  <div class="container">
+    <div class="row">
+      <div id="proceed">Proceed</div>
+    </div>
+  </div>
+
   <script type="text/javascript">
     var booking_id = -1;
     var num_req = 0;
+    var confirmed = 0;
 
     var add_seat = function(seat_id) {
       $.ajax({
@@ -69,9 +76,35 @@
           }
         });
       });
+
+      $("#proceed").on('click', function() {
+        if (num_req != 0 || booking_id == -1) {
+          return;
+        }
+
+        $.ajax({
+          url: "http://localhost:8000/proceed",
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            booking_id: booking_id,
+          },
+          success: function(result) {
+            confirmed = result.success;
+            console.log(result);
+          },
+          error: function() {
+            alert('Something went wrong');
+          }
+        });
+      })
     });
 
     $(window).on('beforeunload', function() {
+      if (confirmed != 0) {
+        console.log(confirmed);
+        return;
+      }
+
       $.ajax({
         url: "http://localhost:8000/cancel_booking/" + booking_id,
         data: {
@@ -79,11 +112,12 @@
           booking_id: booking_id
         }
       })
-    })
+    });
+
   </script>
 
 {% endblock %}
 
 {% block title %}
-{{movie.title}}
+  {{movie.title}}
 {% endblock %}

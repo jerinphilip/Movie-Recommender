@@ -147,14 +147,21 @@ def cancel_booking(request, booking_id):
 def add_seat(request, booking_id):
     seat_id = request.GET.get('seat_id')
     booker = Booker()
-    booker.select.delay(booking_id, seat_id, request.user.userprofile.id)
+    Booker.select(booker, booking_id, seat_id, request.user.userprofile.id)
     return JsonResponse({})
 
 def delete_seat(request, booking_id):
     seat_id = request.GET.get('seat_id')
     booker = Booker()
-    booker.deselect.delay(booking_id, seat_id, request.user.userprofile.id)
+    booker.deselect(booking_id, seat_id, request.user.userprofile.id)
     return JsonResponse({})
+
+def proceed(request):
+    booking_id = request.GET.get("booking_id")
+    if Booking.objects.filter(pk=booking_id).count():
+        return JsonResponse({"success": True})
+    else:
+        return JsonResponse({"success": False})
 
 def movie(request, movie_id):
     try:

@@ -32,3 +32,11 @@
 .selected {
   background-color: green;
 }
+
+#proceed {
+  background-color: red;
+  font-color: green;
+  font-weight: 900;
+  maring: 10px;
+  padding: 10px;
+}
