@@ -18,7 +18,7 @@ from .filters import UserFilter
 from itertools import chain
 from .forms import UserProfileCreationForm
 from django.core.exceptions import ViewDoesNotExist
-from functors.recommender import PopularRecommender
+from functors.recommender import PopularRecommender, CBRecommender
 
 # Create your views here.
 
@@ -130,6 +130,12 @@ def popular(request):
     recommender = PopularRecommender()
     ordered = recommender.top(5)
     # print(ordered)
+    return render(request, 'popular.html', {"popular": ordered})
+    # return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def similar(request):
+    recommender = CBRecommender()
+    ordered = recommender.top(20)
     return render(request, 'popular.html', {"popular": ordered})
     # return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
