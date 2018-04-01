@@ -1,9 +1,7 @@
 from .singleton import Singleton
 from booking_system.models import *
-from celery import Celery
 from django.db import transaction
-
-app = Celery('booking_system', broker="redis://locahost:6379/0")
+from movie_recommender.celery import app
 
 
 class Booker(Singleton):
@@ -20,8 +18,9 @@ class Booker(Singleton):
                                get(name="In Progress")).save()
         return booking
 
+    @staticmethod
     @app.task
-    def select(self, booking_id, seat_id, user_id):
+    def select(booking_id, seat_id, user_id):
         with transaction.atomic():
             booking = Booking.objects.get(id=booking_id)
             if booking.user.id != user_id or booking.invoice.status.name != "In Progress":
@@ -31,8 +30,9 @@ class Booker(Singleton):
             booking.seats.add(Seat.objects.get(pk=seat_id))
             return booking.save()
 
+    @staticmethod
     @app.task
-    def deselect(self, booking_id, seat_id, user_id):
+    def deselect(booking_id, seat_id, user_id):
         with transaction.atomic():
             booking = Booking.objects.get(id=booking_id)
             if booking.user.id != user_id or booking.invoice.status.name != "In Progress":
