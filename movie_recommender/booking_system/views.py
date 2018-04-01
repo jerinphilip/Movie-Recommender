@@ -133,9 +133,10 @@ def popular(request):
     return render(request, 'popular.html', {"popular": ordered})
     # return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
-def similar(request):
+def similar(request, movie_id):
+    query = Movie.objects.get(id=movie_id)
     recommender = CBRecommender()
-    ordered = recommender.top(20)
+    ordered = recommender.top(query)
     return render(request, 'popular.html', {"popular": ordered})
     # return HttpResponseNotFound('<h1>Page under construction?</h1>')
 

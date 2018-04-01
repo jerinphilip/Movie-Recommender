@@ -153,3 +153,15 @@ class AggregateRating(models.Model):
     average = models.FloatField(default=0)
     count = models.IntegerField(default=0)
     popularity = models.FloatField(default=0)
+
+
+class Similar(models.Model):
+    query = models.ForeignKey(Movie, on_delete=models.CASCADE,
+            related_name='%(class)s_query')
+    similar_to = models.ForeignKey(Movie, on_delete=models.CASCADE,
+            related_name='%(class)s_similar_to')
+
+    rank = models.FloatField(default=0)
+
+    class Meta:
+        unique_together = ['query', 'similar_to']
