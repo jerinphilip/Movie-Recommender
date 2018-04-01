@@ -3,7 +3,7 @@ import booking_system.models as M
 from datetime import datetime
 import pandas as pd
 import funcy as fy
-import random 
+import random
 import numpy
 
 
@@ -44,7 +44,7 @@ class Command(BaseCommand):
     def _seed_status_type(self):
         M.StatusType.objects.all().delete()
         s = ["Success", "Failure", "In Progress"] #Creating three cast types
-        for i in range(3): 
+        for i in range(3):
             name = s[i]
             _status_type = M.StatusType.objects.create(name=name)
             _status_type.save()
@@ -285,4 +285,3 @@ class Command(BaseCommand):
 # 25 imdb_score
 # 26 aspect_ratio
 # 27 movie_facebook_likes
-

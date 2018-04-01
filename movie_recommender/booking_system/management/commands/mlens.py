@@ -19,6 +19,8 @@ gender_map = dict([
 ])
 
 
+
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument(
@@ -38,7 +40,7 @@ class Command(BaseCommand):
 
 
     def seed(self, path):
-        data = mldt.load(path)
+        data = mldt.load(path, self.debug)
         self.prototype(data)
 
     def get(self, Model, **params):
@@ -59,6 +61,7 @@ class Command(BaseCommand):
 
     def _movie(self, mf): 
         _mapping = {
+           "id": "id",
            "synopsis": "overview", 
            "tagline": "tagline" ,
            "title": "title",
@@ -118,6 +121,11 @@ class Command(BaseCommand):
     def _crew(self, _profile, cast_type):
         return self.get(M.Crew, profile=_profile, role=cast_type)
 
+    def _user(self, user):
+        keys = ['first_name', 'last_name', 'username']
+        params = self.mapping(dict(zip(keys, keys)), user)
+        gender = self.get(M.Gender, name=user['gender'])
+        return self.get(M.UserProfile, **params, gender=gender)
 
     def _genres(self, movie, mf):
         serialized_genre = mf["genres"]
@@ -128,6 +136,7 @@ class Command(BaseCommand):
             _genres.append(_genre)
         movie.genres.set(_genres)
 
+
     def _casts(self, cast, movie):
         cast = literal_eval(cast)
         cast_type = self._cast_type("Actor")
@@ -136,17 +145,36 @@ class Command(BaseCommand):
             _crew = self._crew(_profile, cast_type)
             self._add_movie_crew(_crew, movie)
 
+    def _add_rating(self, rating):
+        uid = rating['userId'].astype(int)
+        mid = rating['movieId'].astype(int)
+        print(uid, mid, rating["rating"]) 
+        try:
+            movie = self.get(M.Movie, id=mid)
+            user = self.get(M.Movie, id=uid)
+            _rating = self.get(M.rating, user=user, movie=movie, 
+                    rating=rating["rating"])
+            print(uid, mid, rating["rating"]) 
+        except:
+            raise
+
     def prototype(self, data):
+        user = data["names_small"]
+
+        def wrapped(iterator):
+            limit = 5
+            if self.debug: return fy.take(limit, iterator)
+            return iterator
+
+        for i, user in wrapped(user.iterrows()):
+            _user = self._user(user)
+            print(_user)
+
         movies = data["movies_metadata"]
         credits = data["credits"]
 
         iterator = zip(movies.iterrows(), credits.iterrows())
-        
-        # Reduce set while prototyping.
-        if self.debug == True:
-            iterator = fy.take(5, iterator)
-
-        for pack in iterator:
+        for pack in wrapped(iterator):
             (i, movie), (j, credit) = pack 
             print(i, movie["title"])
             _movie = self._movie(movie)
@@ -158,3 +186,8 @@ class Command(BaseCommand):
                 cast_type = self._cast_type("Director")
                 _crew = self._crew(_profile, cast_type)
                 self._add_movie_crew(_crew, _movie)
+
+        ratings = data["ratings_small"]
+        for i, rating in wrapped(ratings.iterrows()):
+            self._add_rating(rating)
+
