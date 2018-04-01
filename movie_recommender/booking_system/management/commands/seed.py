@@ -3,7 +3,7 @@ import booking_system.models as M
 from datetime import datetime
 import pandas as pd
 import funcy as fy
-import random 
+import random
 import numpy
 
 
@@ -21,7 +21,7 @@ class Command(BaseCommand):
     def _seed_cast_type(self):
         M.CastType.objects.all().delete()
         c = ["Director", "Actor", "Producer"] #Creating three cast types
-        for i in range(3): 
+        for i in range(3):
             name = c[i]
             _cast_type = M.CastType.objects.create(name=name)
             _cast_type.save()
@@ -29,11 +29,11 @@ class Command(BaseCommand):
     def _seed_gender(self):
         M.Gender.objects.all().delete()
         g = ["Male", "Female"] #Creating two gender
-        for i in range(2): 
+        for i in range(2):
             name = g[i]
             _gender = M.Gender.objects.create(name=name)
             _gender.save()
-    
+
     def _seed_languages(self, langs):
         M.Language.objects.all().delete()
         langs = set(list(langs))
@@ -44,7 +44,7 @@ class Command(BaseCommand):
     def _seed_status_type(self):
         M.StatusType.objects.all().delete()
         s = ["Success", "Failure", "In Progress"] #Creating three cast types
-        for i in range(3): 
+        for i in range(3):
             name = s[i]
             _status_type = M.StatusType.objects.create(name=name)
             _status_type.save()
@@ -75,6 +75,7 @@ class Command(BaseCommand):
 
     def _seed_user_profile(self):
         M.UserProfile.objects.all().delete()
+        M.User.objects.all().delete()
         _age = 23
         phones = ["0123456789", "1234567890", "2345678901"]#, "3456789012", "4567890123"]
         usernames = ['Harshil', 'Jerin', 'Mandar']
@@ -85,7 +86,9 @@ class Command(BaseCommand):
         _gender = M.Gender.objects.get(name=gen)
         #creating 3 users
         for i in range(3):
-            _user_profile = M.UserProfile.objects.create(gender=_gender, age=_age, phone=phones[i], username=usernames[i], password=passwords[i])
+            _user = M.User.objects.create(username=usernames[i], password=passwords[i], email="")
+            _user.save()
+            _user_profile = M.UserProfile.objects.create(gender=_gender, age=_age, phone=phones[i], user=_user)
             _user_profile.genre_pref.set(_genre_pref)
             _user_profile.save()
 
@@ -172,6 +175,7 @@ class Command(BaseCommand):
 
     def _seed_seat(self):
         M.Seat.objects.all().delete()
+        _seat_type = M.SeatType.objects.all()[0]
         _screens = list(M.Screen.objects.all())
         _rows = map(chr, range(ord('A'), ord('Z')+1)) # rows from A - Z
         _columns = list(range(1,11)) # columns from 1 - 10
@@ -179,13 +183,14 @@ class Command(BaseCommand):
             for _row in _rows:
                 for _column in _columns:
                     _seat = M.Seat.objects.create(screen=_screen,row_id=_row,
-                                                  col_id=_column)
+                                                  col_id=_column,
+                                                  seat_type=_seat_type)
                     _seat.save()
 
     def _seed_booking(self):
         M.Booking.objects.all().delete()
         phones = ["0123456789","1234567890", "2345678901"]#, "3456789012", "4567890123"]
-        for p in phones:           
+        for p in phones:
             _user = M.UserProfile.objects.get(phone=p)
             _seats = M.Seat.objects.get(row_id='A', col_id=3)
             _type = M.SeatType.objects.get(name="Regular")
@@ -212,11 +217,11 @@ class Command(BaseCommand):
         movie_params = [11, 19, 9, 1, 10, 6, 14]
         ms = df.iloc[:, movie_params]
         self._seed_movies(ms)
-        # self._seed_seat_type()
-        # self._seed_theater()
-        # self._seed_screens()
-        # self._seed_shows()
-        # self._seed_seat()
+        self._seed_seat_type()
+        self._seed_theater()
+        self._seed_screens()
+        self._seed_shows()
+        self._seed_seat()
         # self._seed_booking()
         # self._seed_invoice()
         # self._seed_review(s)
@@ -249,4 +254,3 @@ class Command(BaseCommand):
 # 25 imdb_score
 # 26 aspect_ratio
 # 27 movie_facebook_likes
-

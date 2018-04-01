@@ -12,3 +12,31 @@
     column-count: 7;
   }
 }
+
+.movie_ticket {
+  width: 25px;
+  height: 25px;
+  margin: 1px;
+  border: 1px solid black;
+  border-radius: 4px;
+}
+
+.selectable {
+
+}
+
+.unselectable {
+  background-color: gray;
+}
+
+.selected {
+  background-color: green;
+}
+
+#proceed {
+  background-color: red;
+  font-color: green;
+  font-weight: 900;
+  maring: 10px;
+  padding: 10px;
+}

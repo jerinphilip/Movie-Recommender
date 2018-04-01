@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    {% for row in matrix %}
+      <div class="row">
+      {% for element in row %}
+        {% if element.selected %}
+          <div class="movie_ticket unselectable"></div>
+        {% endif %}
+        {% if not element.selected %}
+          <div class="movie_ticket selectable" id={{element.id}}></div>
+        {% endif %}
+      {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div id="proceed">Proceed</div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    var booking_id = -1;
+    var num_req = 0;
+    var confirmed = 0;
+
+    var add_seat = function(seat_id) {
+      $.ajax({
+        url: "http://localhost:8000/add_seat/" + booking_id,
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          seat_id: seat_id,
+        }
+      })
+    };
+
+    var delete_seat = function(seat_id) {
+      $.ajax({
+        url: "http://localhost:8000/delete_seat/" + booking_id,
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          seat_id: seat_id,
+        }
+      })
+    };
+
+    $(window).on('load', function(){
+      $.ajax({
+        url: "http://localhost:8000/start_booking/{{show.id}}",
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}'
+        },
+        success: function (result) {
+          num_req -= 1;
+          booking_id = result.booking.id;
+          console.log("success start booking", booking_id);
+        },
+        error: function() {
+          num_req -= 1;
+          console.log("failure start booking")
+        }
+      })
+      num_req += 1;
+
+      $( ".selectable" ).each(function(index) {
+        $(this).on("click", function(){
+          if ($(this).hasClass('selected')) {
+            $(this).removeClass('selected');
+            delete_seat($(this).attr('id'));
+          } else {
+            $(this).addClass('selected');
+            add_seat($(this).attr('id'));
+          }
+        });
+      });
+
+      $("#proceed").on('click', function() {
+        if (num_req != 0 || booking_id == -1) {
+          return;
+        }
+
+        $.ajax({
+          url: "http://localhost:8000/proceed",
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+            booking_id: booking_id,
+          },
+          success: function(result) {
+            confirmed = result.success;
+            console.log(result);
+          },
+          error: function() {
+            alert('Something went wrong');
+          }
+        });
+      })
+    });
+
+    $(window).on('beforeunload', function() {
+      if (confirmed != 0) {
+        console.log(confirmed);
+        return;
+      }
+
+      $.ajax({
+        url: "http://localhost:8000/cancel_booking/" + booking_id,
+        data: {
+          csrfmiddlewaretoken: '{{ csrf_token }}',
+          booking_id: booking_id
+        }
+      })
+    });
+
+  </script>
+
+{% endblock %}
+
+{% block title %}
+  {{movie.title}}
+{% endblock %}

@@ -6,5 +6,4 @@ class UserProfileCreationForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ["age", "gender", "phone", "genre_pref", "username", "password", "first_name", "last_name"]  
-
+        fields = ["age", "gender", "phone", "genre_pref"]  

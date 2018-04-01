@@ -4,12 +4,14 @@ from django.contrib.auth.models import User
 
 class CastType(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
     def __str__(self):
         return self.name
 
 
 class Gender(models.Model):
     name = models.CharField(max_length=100, unique=True)
+
     def __str__(self):
         return self.name
 
@@ -19,10 +21,11 @@ class Language(models.Model):
 
     def __str__(self):
         return self.lang
-    
+
+
 class StatusType(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    
+
     def __str__(self):
         return self.name
 
@@ -45,11 +48,13 @@ class Genre(models.Model):
         return self.genre
 
 
-class UserProfile(User):
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(default=0)
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     phone = models.CharField(default="", max_length=10)
     genre_pref = models.ManyToManyField(Genre)
+
 
 class Crew(models.Model):
     profile = models.ForeignKey(CrewProfile, on_delete=models.CASCADE)
@@ -61,15 +66,16 @@ class Crew(models.Model):
     def __str__(self):
         return self.profile.name
 
+
 class Movie(models.Model):
     title = models.CharField(max_length=100, default="")
     synopsis = models.TextField(default="")
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
     crew = models.ManyToManyField(Crew)
     genres = models.ManyToManyField(Genre)
-    release_date = models.DateField()
+    #release_date = models.DateField()
     tagline = models.TextField(default="")
-    imdb_id = models.CharField(unique=True, max_length=20)
+    #imdb_id = models.CharField(unique=True, max_length=20)
 
     def __str__(self):
         return self.title
@@ -94,7 +100,7 @@ class Theater(models.Model):
     location_lat = models.FloatField(default=0)
     location_long = models.FloatField(default=0)
     seat_types = models.ManyToManyField(SeatType)
-    owner=models.ForeignKey(TheaterOwner,on_delete=models.CASCADE)
+    #owner=models.ForeignKey(TheaterOwner,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -118,6 +124,8 @@ class Seat(models.Model):
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
     row_id = models.CharField(max_length=3)
     col_id = models.CharField(max_length=5)
+    seat_type = models.ForeignKey(SeatType, on_delete=models.CASCADE,
+                                  default=0)
 
     def __str__(self):
         return '{}-{}'.format(self.row_id, self.col_id)
@@ -126,17 +134,17 @@ class Seat(models.Model):
 class Booking(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     seats = models.ManyToManyField(Seat)
-    show  = models.ForeignKey(Show, on_delete=models.CASCADE)
-    type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
+    show = models.ForeignKey(Show, on_delete=models.CASCADE)
 
 
 class Invoice(models.Model):
-    booking = models.ForeignKey(Booking, on_delete=models.CASCADE)
+    booking = models.OneToOneField(Booking, on_delete=models.CASCADE,
+                                   primary_key=True)
     ticket_price = models.FloatField(default=0)
     taxes = models.FloatField(default=0)
     service_charge = models.FloatField(default=0)
     total_price = models.FloatField(default=0)
-    status = models.ForeignKey(StatusType, on_delete=models.CASCADE)
+    status = models.ForeignKey(StatusType, on_delete=models.CASCADE, default=0)
 
 
 class Review(models.Model):
