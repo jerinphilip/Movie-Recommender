@@ -88,17 +88,27 @@ class TheaterOwner(User):
     gender = models.ForeignKey(Gender, on_delete=models.CASCADE)
     phone = models.CharField(default="", max_length=10)
 
-
-class Theater(models.Model):
+class City(models.Model):
     name = models.CharField(max_length=100, default="")
-    location_lat = models.FloatField(default=0)
-    location_long = models.FloatField(default=0)
-    seat_types = models.ManyToManyField(SeatType)
-    owner=models.ForeignKey(TheaterOwner,on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
+class Location(models.Model):
+    name = models.CharField(max_length=100, default="")
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    location_lat = models.FloatField(default=0)
+    location_long = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.name
+
+class Theater(models.Model):
+    name = models.CharField(max_length=100, default="")
+    location = models.ForeignKey(Location, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name
 
 class Screen(models.Model):
     theater = models.ForeignKey(Theater, on_delete=models.CASCADE)
@@ -107,20 +117,29 @@ class Screen(models.Model):
     def __str__(self):
         return '{}-{}'.format(self.theater.name, self.identifier)
 
+    class Meta:
+        unique_together = ['theater', 'identifier']
 
 class Show(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
-    time = models.TimeField()
+    show_time = models.DateTimeField()
+
+    class Meta:
+        unique_together = ['movie', 'screen', 'show_time']
 
 
 class Seat(models.Model):
     screen = models.ForeignKey(Screen, on_delete=models.CASCADE)
     row_id = models.CharField(max_length=3)
     col_id = models.CharField(max_length=5)
+    seat_type = models.ForeignKey(SeatType, on_delete=models.CASCADE)
 
     def __str__(self):
         return '{}-{}'.format(self.row_id, self.col_id)
+
+    class Meta:
+        unique_together = ['row_id', 'col_id', 'screen']
 
 
 class Booking(models.Model):
