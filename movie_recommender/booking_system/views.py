@@ -20,9 +20,7 @@ from itertools import chain
 from .forms import UserProfileCreationForm
 from django.core.exceptions import ViewDoesNotExist
 from functors.booker import Booker
-# Create your views here
-from functors.recommender import PopularRecommender
-
+from functors.recommender import PopularRecommender, CBRecommender
 # Create your views here.
 
 
@@ -189,6 +187,13 @@ def popular(request):
     recommender = PopularRecommender()
     ordered = recommender.top(5)
     # print(ordered)
+    return render(request, 'popular.html', {"popular": ordered})
+    # return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def similar(request, movie_id):
+    query = Movie.objects.get(id=movie_id)
+    recommender = CBRecommender()
+    ordered = recommender.top(query)
     return render(request, 'popular.html', {"popular": ordered})
     # return HttpResponseNotFound('<h1>Page under construction?</h1>')
 
