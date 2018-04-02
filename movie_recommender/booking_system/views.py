@@ -175,7 +175,7 @@ def crew(request, crew_id):
     try:
         _crew = CrewProfile.objects.get(pk=crew_id)
         _crew_type = Crew.objects.get(profile=crew_id)
-        _movies = Movie.objects.get(crew=_crew_type.id)
+        _movies = Movie.objects.filter(crew=_crew_type.id)
         return render(request, 'crew_profile.html', {"crew": _crew, "crew_type" : _crew_type, "movies": _movies})
     except CrewProfile.DoesNotExist:
         return HttpResponseNotFound('<h1>Crew profile Does not exist</h1>')
@@ -201,3 +201,9 @@ def popular_by_genre(request, genre):
     recommender = PopularRecommender()
     ordered = recommender.top_by_genre(genre, 5)
     return HttpResponseNotFound('<h1>Page under construction?</h1>')
+
+def shows(request, movie_id):
+    _shows = Show.objects.filter(movie=movie_id)
+    # print(_shows[0].show_time)
+    return render(request, 'shows.html', {"shows": _shows})
+    # return HttpResponseNotFound('<h1>Page under construction?</h1>')
