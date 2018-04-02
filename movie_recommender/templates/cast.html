@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card-columns">
+{% for crew in crews %}
+<div class="card rounded mx-2 p-2">
+    <img class="card-img-top" src="/static/images/crew.png" alt="Card image cap">
+    <div class="card-body">
+        <h6 class="card-title"> <a href="../crew/{{crew.id}}">{{crew.name}}</a> </h6>
+    </div>
+</div>
+{% endfor %}
+</div>
+{% endblock %}
+
